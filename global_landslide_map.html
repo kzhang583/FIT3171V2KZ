@@ -3,53 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vega-Lite Visualizations</title>
+    <title>Combined Vega-Lite Visualizations</title>
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 </head>
 <body>
 
-    <h2>World Map of Global Landslide Events</h2>
+    <h2>Map of Australian Landslide Events</h2>
     <div id="vis1"></div>
 
-    <h2>Time Series of Australian Landslide Events</h2>
+    <h2>Stacked Bar Chart and Line Chart of Australian Landslide Events by State</h2>
     <div id="vis2"></div>
 
+    <h2>Bubble Chart of Landslide Fatality Count by Category, Trigger, and Size</h2>
+    <div id="vis3"></div>
+
     <script type="text/javascript">
-        // First visualization: World map with landslide events
+        // First visualization: Map of Australian Landslide Events
         const spec1 = {
           "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
           "width": 800,
           "height": 600,
           "projection": {
-            "type": "equirectangular"
+            "type": "mercator",
+            "center": [133.7751, -28.2744],
+            "scale": 850
           },
           "layer": [
             {
               "data": {
                 "url": "https://vega.github.io/vega-datasets/data/world-110m.json",
-                "format": {
-                  "type": "topojson",
-                  "feature": "countries"
-                }
+                "format": {"type": "topojson", "feature": "countries"}
               },
-              "mark": {
-                "type": "geoshape",
-                "fill": "lightgray",
-                "stroke": "white"
-              }
+              "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
             },
             {
               "data": {
-                "url": "https://raw.githubusercontent.com/kzhang583/3179W9HW/main/Global_Landslide_Catalog_Export.csv"
+                "url": "https://raw.githubusercontent.com/kzhang583/3179W9HW/main/Global_Landslide_Catalog_Export.csv",
+                "format": {"type": "csv"}
               },
+              "transform": [
+                {"filter": "datum.country_code == 'AU'"}
+              ],
               "mark": "circle",
               "encoding": {
                 "longitude": {"field": "longitude", "type": "quantitative"},
                 "latitude": {"field": "latitude", "type": "quantitative"},
                 "size": {"value": 30},
-                "color": {"value": "#8B4513"},  // Lighter brown/mud color
+                "color": {"value": "#8B4513"},
                 "tooltip": [
                   {"field": "event_title", "type": "nominal", "title": "Event"},
                   {"field": "event_date", "type": "temporal", "title": "Date"}
@@ -59,12 +61,13 @@
           ]
         };
 
-        // Second visualization: Time series of Australian landslide events
+        // Second visualization: Stacked Bar and Line Chart with Year Slider
         const spec2 = {
           "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-          "description": "Time series of Australian landslide events with distinct event counting and an annotation for 2011.",
+          "description": "Combined Stacked Bar Chart and Line Chart for Australian Landslide Events by State with annotation for 2011 and a year slider.",
+          "width": 700,
+          "height": 400,
           "data": {
-            "name": "source_1",
             "url": "https://raw.githubusercontent.com/kzhang583/3179W9HW/main/Global_Landslide_Catalog_Export.csv",
             "format": {
               "type": "csv"
@@ -73,82 +76,68 @@
           "params": [
             {
               "name": "Year_Lower_Limit",
-              "value": 2000,
+              "value": 2007,
               "bind": {
                 "input": "range",
-                "min": 2000,
-                "max": 2020,
+                "min": 2007,
+                "max": 2016,
                 "step": 1,
                 "name": "Select Minimum Year: "
               }
             },
             {
               "name": "Year_Upper_Limit",
-              "value": 2020,
+              "value": 2016,
               "bind": {
                 "input": "range",
-                "min": 2000,
-                "max": 2020,
+                "min": 2007,
+                "max": 2016,
                 "step": 1,
                 "name": "Select Maximum Year: "
               }
             }
           ],
           "transform": [
-            {
-              "filter": "datum.country_code == 'AU'"
-            },
-            {
-              "calculate": "year(datum.event_date)",
-              "as": "Year"
-            },
-            {
-              "filter": "datum.Year >= Year_Lower_Limit && datum.Year <= Year_Upper_Limit"
-            }
+            {"filter": "datum.country_code == 'AU'"},
+            {"calculate": "year(datum.event_date)", "as": "Year"},
+            {"filter": "datum.Year >= Year_Lower_Limit && datum.Year <= Year_Upper_Limit"}
           ],
-          "mark": {
-            "type": "line",
-            "point": {
-              "filled": true,
-              "size": 80
-            }
-          },
-          "encoding": {
-            "x": {
-              "field": "Year",
-              "type": "ordinal",
-              "title": "Year"
-            },
-            "y": {
-              "aggregate": "distinct",
-              "field": "event_id",
-              "type": "quantitative",
-              "title": "Number of Unique Events"
-            },
-            "tooltip": [
-              {"field": "Year", "title": "Year"},
-              {"aggregate": "distinct", "field": "event_id", "type": "quantitative", "title": "Number of Unique Events"}
-            ]
-          },
           "layer": [
             {
-              "mark": "line"
-            },
-            {
-              "mark": "point"
-            },
-            {
-              "mark": {
-                "type": "rule",
-                "color": "red",
-                "size": 2
-              },
+              "mark": "bar",
               "encoding": {
-                "x": {
-                  "datum": 2011,
-                  "type": "ordinal"
+                "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+                "y": {
+                  "aggregate": "count",
+                  "field": "event_id",
+                  "type": "quantitative",
+                  "title": "Number of Events",
+                  "scale": {"domain": [0, 26]}
+                },
+                "color": {
+                  "field": "admin_division_name",
+                  "type": "nominal",
+                  "title": "State",
+                  "scale": {"scheme": "tableau10"}
                 }
               }
+            },
+            {
+              "mark": {"type": "line", "color": "black", "size": 2},
+              "encoding": {
+                "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+                "y": {
+                  "aggregate": "count",
+                  "field": "event_id",
+                  "type": "quantitative",
+                  "title": "Total Events",
+                  "scale": {"domain": [0, 26]}
+                }
+              }
+            },
+            {
+              "mark": {"type": "rule", "color": "red", "size": 2},
+              "encoding": {"x": {"datum": 2011, "type": "ordinal"}}
             },
             {
               "mark": {
@@ -162,26 +151,61 @@
                 "fontSize": 10
               },
               "encoding": {
-                "x": {
-                  "datum": 2011,
-                  "type": "ordinal"
-                },
-                "y": {
-                  "datum": 24
-                },
-                "text": {
-                  "value": "Year with most landslide events"
-                }
+                "x": {"datum": 2011, "type": "ordinal"},
+                "y": {"datum": 25},
+                "text": {"value": "Year with most landslide events"}
               }
             }
           ]
         };
 
-        // Embed the first visualization
-        vegaEmbed('#vis1', spec1).catch(console.warn);
+        // Third visualization: Bubble Chart for Fatality Count by Category, Trigger, and Size
+        const spec3 = {
+          "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+          "description": "Bubble chart showing landslide fatality count by category, trigger, and size with more pronounced bubble sizes.",
+          "width": 600,
+          "height": 400,
+          "data": {
+            "url": "https://raw.githubusercontent.com/kzhang583/3179W9HW/main/Global_Landslide_Catalog_Export.csv",
+            "format": {"type": "csv"}
+          },
+          "transform": [
+            {"filter": "datum.fatality_count != null"}
+          ],
+          "mark": {"type": "circle", "tooltip": true},
+          "encoding": {
+            "x": {"field": "landslide_category", "type": "nominal", "title": "Landslide Category"},
+            "y": {"field": "fatality_count", "type": "quantitative", "title": "Fatalities"},
+            "size": {
+              "field": "landslide_size",
+              "type": "nominal",
+              "title": "Landslide Size",
+              "scale": {
+                "domain": ["unknown", "small", "medium", "large", "very_large", "catastrophic"],
+                "range": [50, 300, 600, 1200, 3000, 6000]
+              }
+            },
+            "color": {
+              "field": "landslide_trigger",
+              "type": "nominal",
+              "title": "Trigger",
+              "scale": {"scheme": "category10"}
+            },
+            "tooltip": [
+              {"field": "event_title", "type": "nominal", "title": "Event Title"},
+              {"field": "event_date", "type": "temporal", "title": "Event Date"},
+              {"field": "landslide_category", "type": "nominal", "title": "Landslide Category"},
+              {"field": "fatality_count", "type": "quantitative", "title": "Fatalities"},
+              {"field": "landslide_size", "type": "nominal", "title": "Landslide Size"},
+              {"field": "landslide_trigger", "type": "nominal", "title": "Trigger"}
+            ]
+          }
+        };
 
-        // Embed the second visualization
+        // Embed all three visualizations
+        vegaEmbed('#vis1', spec1).catch(console.warn);
         vegaEmbed('#vis2', spec2).catch(console.warn);
+        vegaEmbed('#vis3', spec3).catch(console.warn);
     </script>
 
 </body>
