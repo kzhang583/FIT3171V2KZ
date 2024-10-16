@@ -1,6 +1,11 @@
-
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Global Landslide Events",
+    "fontSize": 20,
+    "anchor": "middle",
+    "dy": -10
+  },
   "width": 1000,
   "height": 500,
   "projection": {
@@ -25,7 +30,7 @@
       "value": "All",
       "bind": {
         "input": "select",
-        "options": ["All", "unknown", "small", "medium", "large", "very_large", "catastrophic"],
+        "options": ["All", "unknown", "small", "medium", "large", "very large", "catastrophic"],
         "name": "Select Landslide Size: "
       }
     },
@@ -39,16 +44,16 @@
           "landslide",
           "mudslide",
           "complex",
-          "rock_fall",
-          "debris_flow",
-          "riverbank_collapse",
+          "rock fall",
+          "debris flow",
+          "riverbank collapse",
           "other",
           "unknown",
           "lahar",
-          "snow_avalanche",
+          "snow avalanche",
           "creep",
-          "earth_flow",
-          "translational_slide",
+          "earth flow",
+          "translational slide",
           "topple"
         ],
         "name": "Select Landslide Category: "
@@ -64,19 +69,19 @@
           "rain",
           "downpour",
           "monsoon",
-          "tropical_cyclone",
+          "tropical cyclone",
           "unknown",
-          "continuous_rain",
-          "dam_embankment_collapse",
-          "no_apparent_trigger",
+          "continuous rain",
+          "dam embankment collapse",
+          "no apparent trigger",
           "other",
-          "leaking_pipe",
+          "leaking pipe",
           "construction",
-          "snowfall_snowmelt",
+          "snowfall snowmelt",
           "mining",
           "flooding",
           "earthquake",
-          "freeze_thaw",
+          "freeze thaw",
           "volcano",
           "vibration"
         ],
@@ -92,18 +97,18 @@
           "All",
           "mine",
           "unknown",
-          "above_road",
+          "above road",
           "urban",
-          "natural_slope",
-          "engineered_slope",
-          "below_road",
-          "above_river",
-          "retaining_wall",
+          "natural slope",
+          "engineered slope",
+          "below road",
+          "above river",
+          "retaining wall",
           "other",
-          "above_coast",
+          "above coast",
           "bluff",
-          "burned_area",
-          "deforested_slope"
+          "burned area",
+          "deforested slope"
         ],
         "name": "Select Landslide Setting: "
       }
