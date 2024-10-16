@@ -1,0 +1,139 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Stacked Bar Chart and Line Chart for Australian Landslide Events by State with a maximum year slider, state filter, tooltips, and ordered segments.",
+  "title": "Australian Landslide Events by State and Year (2007-2016)",  
+  "width": 700,
+  "height": 400,
+  "data": {
+    "url": "https://raw.githubusercontent.com/kzhang583/FIT3171V2KZ/main/Global_Landslide_Catalog_Export.csv",
+    "format": {
+      "type": "csv"
+    }
+  },
+  "params": [
+    {
+      "name": "Year_Upper_Limit",
+      "value": 2016,
+      "bind": {
+        "input": "range",
+        "min": 2007,
+        "max": 2016,
+        "step": 1,
+        "name": "Select Maximum Year: "
+      }
+    },
+    {
+      "name": "StateFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All",
+          "New South Wales",
+          "Queensland",
+          "South Australia",
+          "Tasmania",
+          "Victoria",
+          "Western Australia"
+        ],
+        "name": "Select State: "
+      }
+    }
+  ],
+  "transform": [
+    {"filter": "datum.country_code == 'AU'"},
+    {"calculate": "year(datum.event_date)", "as": "Year"},
+    {"filter": "datum.Year <= Year_Upper_Limit"},
+    {
+      "filter": "StateFilter == 'All' || datum.admin_division_name == StateFilter"
+    },
+    {
+      "window": [{"op": "count", "as": "TotalEvents"}],
+      "frame": [null, null],
+      "groupby": ["Year", "admin_division_name"]
+    }
+  ],
+  "layer": [
+    {
+      "mark": "bar",
+      "encoding": {
+        "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+        "y": {
+          "aggregate": "count",
+          "field": "event_id",
+          "type": "quantitative",
+          "title": "Number of Events",
+          "scale": {"domain": [0, 26]}
+        },
+        "color": {
+          "field": "admin_division_name",
+          "type": "nominal",
+          "title": "State",
+          "scale": {
+            "domain": [
+              "New South Wales",
+              "Queensland",
+              "South Australia",
+              "Tasmania",
+              "Victoria",
+              "Western Australia"
+            ],
+            "range": [
+              "#f58418",  // NSW orange
+              "#81a0c2",  // QLD blue
+              "#eec93a",  // SA yellow
+              "#72b7b2",  // TAS teel
+              "#b279a1",  // VIC purple
+              "#fd9ea6"   // WA pink
+            ]
+          }
+        },
+        "order": {
+          "aggregate": "count", 
+          "field": "event_id", 
+          "type": "quantitative", 
+          "sort": "descending"  // Order by count of events, descending
+        },
+        "tooltip": [
+          {"field": "Year", "title": "Year"},
+          {"aggregate": "count", "field": "event_id", "type": "quantitative", "title": "Number of Events"},
+          {"field": "admin_division_name", "type": "nominal", "title": "State"}
+        ]
+      }
+    },
+    {
+      "mark": {"type": "line", "color": "black", "size": 2},
+      "encoding": {
+        "x": {"field": "Year", "type": "ordinal", "title": "Year"},
+        "y": {
+          "aggregate": "count",
+          "field": "event_id",
+          "type": "quantitative",
+          "title": "Total Events",
+          "scale": {"domain": [0, 26]}
+        },
+        "tooltip": [
+          {"field": "Year", "title": "Year"},
+          {"aggregate": "count", "field": "event_id", "type": "quantitative", "title": "Total Events"}
+        ]
+      }
+    },
+    {
+      "transform": [
+        {"aggregate": [{"op": "count", "field": "event_id", "as": "TotalEvents"}], "groupby": ["Year"]},
+        {"window": [{"op": "rank", "as": "rank"}], "sort": [{"field": "TotalEvents", "order": "descending"}]},
+        {"filter": "datum.rank == 1"}
+      ],
+      "mark": {"type": "point", "color": "red", "size": 100},
+      "encoding": {
+        "x": {"field": "Year", "type": "ordinal"},
+        "y": {"field": "TotalEvents", "type": "quantitative"},
+        "tooltip": [
+          {"field": "Year", "type": "ordinal", "title": "Year with Most Events"},
+          {"field": "TotalEvents", "type": "quantitative", "title": "Total Events"}
+        ]
+      }
+    }
+  ]
+}
