@@ -1,0 +1,188 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Bubble chart showing landslide fatality count by category, trigger, and size (centered dodging for overlapping points) with more pronounced bubble sizes.",
+  "title": "Fatalities in Global Landslide Events by Category, Trigger, and Size",  
+  "width": 900,
+  "height": 400,
+  "data": {
+    "url": "https://raw.githubusercontent.com/kzhang583/FIT3171V2KZ/main/Global_Landslide_Catalog_Export.csv",
+    "format": {
+      "type": "csv"
+    }
+  },
+  "params": [
+    {
+      "name": "CountryFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": ["All", "Australia", "Other Countries"],
+        "name": "Select Country: "
+      }
+    },
+    {
+      "name": "SizeFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": ["All", "unknown", "small", "medium", "large", "very_large", "catastrophic"],
+        "name": "Select Landslide Size: "
+      }
+    },
+    {
+      "name": "CategoryFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All", "landslide", "mudslide", "complex", "rock fall", "debris flow", 
+          "riverbank collapse", "other", "unknown", "lahar", "snow avalanche", 
+          "creep", "earth flow", "translational slide", "topple"
+        ],
+        "name": "Select Landslide Category: "
+      }
+    },
+    {
+      "name": "TriggerFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All", "construction", "continuous rain", "dam embankment collapse", "downpour", 
+          "earthquake", "flooding", "freeze thaw", "leaking pipe", "mining", 
+          "monsoon", "no apparent trigger", "other", "rain", "snowfall snowmelt", 
+          "tropical cyclone", "unknown", "vibration", "volcano"
+        ],
+        "name": "Select Landslide Trigger: "
+      }
+    },
+    {
+      "name": "FatalityFilter",
+      "value": 5000,
+      "bind": {
+        "input": "number",
+        "min": 0,
+        "max": 5000,
+        "name": "Select Maximum Fatality Count (0-5000): "
+      }
+    }
+  ],
+  "transform": [
+    {"filter": "datum.fatality_count != null"},
+    {"filter": "datum.landslide_category != '' && datum.landslide_trigger != ''"},  // Filter to remove blanks
+    {
+      "filter": "SizeFilter == 'All' || datum.landslide_size == SizeFilter"
+    },
+    {
+      "filter": "CategoryFilter == 'All' || datum.landslide_category == CategoryFilter"
+    },
+    {
+      "filter": "TriggerFilter == 'All' || datum.landslide_trigger == TriggerFilter"
+    },
+    {
+      "filter": "datum.fatality_count <= FatalityFilter"
+    },
+    {
+      "filter": "CountryFilter == 'All' || (CountryFilter == 'Australia' && datum.country_code == 'AU') || (CountryFilter == 'Other Countries' && datum.country_code != 'AU')"
+    },
+    {
+      "calculate": "replace(replace(datum.landslide_category, '_', ' '), 'unknown', 'Unknown')",
+      "as": "landslide_category"
+    },
+    {
+      "calculate": "replace(replace(datum.landslide_trigger, '_', ' '), 'unknown', 'Unknown')",
+      "as": "landslide_trigger"
+    },
+    {
+      "window": [{"op": "rank", "as": "rank"}],
+      "groupby": ["landslide_category"]
+    },
+    {
+      "calculate": "if(datum.rank % 2 == 0, datum.rank / 2, -floor(datum.rank / 2)) * 0.2",
+      "as": "dodge_x"
+    }
+  ],
+  "mark": {
+    "type": "circle",
+    "opacity": 0.8,
+    "tooltip": true
+  },
+  "encoding": {
+    "x": {
+      "field": "landslide_category",
+      "type": "nominal",
+      "title": "Landslide Category",
+      "axis": {
+        "labelAngle": -90,
+        "labelPadding": 10,
+        "labelFontSize": 12,
+        "titleFontSize": 14,
+        "ticks": true,
+        "grid": true
+      },
+      "sort": "ascending"
+    },
+    "y": {
+      "field": "fatality_count",
+      "type": "quantitative",
+      "title": "Fatalities"
+    },
+    "xOffset": {
+      "field": "dodge_x",
+      "type": "quantitative"
+    },
+    "size": {
+      "field": "landslide_size",  
+      "type": "nominal",
+      "title": "Landslide Size",
+      "scale": {
+        "domain": ["unknown", "small", "medium", "large", "very_large", "catastrophic"],
+        "range": [50, 300, 600, 1200, 3000, 6000]
+      }
+    },
+    "color": {
+      "field": "landslide_trigger",
+      "type": "nominal",
+      "title": "Trigger",
+      "scale": {
+        "domain": [
+          "construction", "continuous rain", "dam embankment collapse", "downpour", 
+          "earthquake", "flooding", "freeze thaw", "leaking pipe", "mining", 
+          "monsoon", "no apparent trigger", "other", "rain", "snowfall snowmelt", 
+          "tropical cyclone", "unknown", "vibration", "volcano"
+        ],
+        "range": [
+          "#8B4513",  // construction - brown
+          "#4169E1",  // continuous rain - royal blue
+          "#8B0000",  // dam embankment collapse - dark red
+          "#4682B4",  // downpour - steel blue
+          "#FF4500",  // earthquake - orange red
+          "#00CED1",  // flooding - dark turquoise
+          "#B0C4DE",  // freeze thaw - light steel blue
+          "#FFD700",  // leaking pipe - gold
+          "#A9A9A9",  // mining - dark gray
+          "#20B2AA",  // monsoon - light sea green
+          "#696969",  // no apparent trigger - dim gray
+          "#D3D3D3",  // other - light gray
+          "#1E90FF",  // rain - dodger blue
+          "#ADD8E6",  // snowfall snowmelt - light blue
+          "#FF6347",  // tropical cyclone - tomato red
+          "#778899",  // unknown - light slate gray
+          "#D2691E",  // vibration - chocolate
+          "#FF4500"   // volcano - orange red
+        ]
+      }
+    },
+    "tooltip": [
+      {"field": "event_title", "type": "nominal", "title": "Event Title"},
+      {"field": "event_date", "type": "temporal", "title": "Event Date"},
+      {"field": "landslide_category", "type": "nominal", "title": "Landslide Category"},
+      {"field": "fatality_count", "type": "quantitative", "title": "Fatalities"},
+      {"field": "injury_count", "type": "quantitative", "title": "Injuries"},  // Added injury count
+      {"field": "landslide_size", "type": "nominal", "title": "Landslide Size"},
+      {"field": "landslide_trigger", "type": "nominal", "title": "Trigger"},
+      {"field": "country_code", "type": "nominal", "title": "Country Code"}
+    ]
+  }
+}
