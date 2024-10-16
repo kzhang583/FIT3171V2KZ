@@ -80,12 +80,12 @@
               "Western Australia"
             ],
             "range": [
-              "#f58418",  // NSW orange
-              "#81a0c2",  // QLD blue
-              "#eec93a",  // SA yellow
-              "#72b7b2",  // TAS teel
-              "#b279a1",  // VIC purple
-              "#fd9ea6"   // WA pink
+              "#f58418",  
+              "#81a0c2",  
+              "#eec93a",  
+              "#72b7b2",  
+              "#b279a1",  
+              "#fd9ea6"   
             ]
           }
         },
@@ -93,7 +93,7 @@
           "aggregate": "count", 
           "field": "event_id", 
           "type": "quantitative", 
-          "sort": "descending"  // Order by count of events, descending
+          "sort": "descending"  
         },
         "tooltip": [
           {"field": "Year", "title": "Year"},
