@@ -70,7 +70,7 @@
   ],
   "transform": [
     {"filter": "datum.fatality_count != null"},
-    {"filter": "datum.landslide_category != '' && datum.landslide_trigger != ''"},  // Filter to remove blanks
+    {"filter": "datum.landslide_category != '' && datum.landslide_trigger != ''"},  
     {
       "filter": "SizeFilter == 'All' || datum.landslide_size == SizeFilter"
     },
@@ -153,24 +153,24 @@
           "tropical cyclone", "unknown", "vibration", "volcano"
         ],
         "range": [
-          "#8B4513",  // construction - brown
-          "#4169E1",  // continuous rain - royal blue
-          "#8B0000",  // dam embankment collapse - dark red
-          "#4682B4",  // downpour - steel blue
-          "#FF4500",  // earthquake - orange red
-          "#00CED1",  // flooding - dark turquoise
-          "#B0C4DE",  // freeze thaw - light steel blue
-          "#FFD700",  // leaking pipe - gold
-          "#A9A9A9",  // mining - dark gray
-          "#20B2AA",  // monsoon - light sea green
-          "#696969",  // no apparent trigger - dim gray
-          "#D3D3D3",  // other - light gray
-          "#1E90FF",  // rain - dodger blue
-          "#ADD8E6",  // snowfall snowmelt - light blue
-          "#FF6347",  // tropical cyclone - tomato red
-          "#778899",  // unknown - light slate gray
-          "#D2691E",  // vibration - chocolate
-          "#FF4500"   // volcano - orange red
+          "#8B4513",  
+          "#4169E1",  
+          "#8B0000",  
+          "#4682B4",  
+          "#FF4500",  
+          "#00CED1",  
+          "#B0C4DE",  
+          "#FFD700",  
+          "#A9A9A9",  
+          "#20B2AA",  
+          "#696969",  
+          "#D3D3D3",  
+          "#1E90FF",  
+          "#ADD8E6",  
+          "#FF6347",  
+          "#778899",  
+          "#D2691E",  
+          "#FF4500"   
         ]
       }
     },
@@ -179,7 +179,7 @@
       {"field": "event_date", "type": "temporal", "title": "Event Date"},
       {"field": "landslide_category", "type": "nominal", "title": "Landslide Category"},
       {"field": "fatality_count", "type": "quantitative", "title": "Fatalities"},
-      {"field": "injury_count", "type": "quantitative", "title": "Injuries"},  // Added injury count
+      {"field": "injury_count", "type": "quantitative", "title": "Injuries"},  
       {"field": "landslide_size", "type": "nominal", "title": "Landslide Size"},
       {"field": "landslide_trigger", "type": "nominal", "title": "Trigger"},
       {"field": "country_code", "type": "nominal", "title": "Country Code"}
