@@ -75,7 +75,7 @@
           "type": "nominal",
           "scale": {
             "domain": ["unknown", "small", "medium", "large", "very_large", "catastrophic"],
-            "range": [150, 400, 800, 1200, 1600, 2000]  // Larger size differences for better visibility
+            "range": [150, 400, 800, 1200, 1600, 2000]  
           },
           "title": "Landslide Size"
         },
