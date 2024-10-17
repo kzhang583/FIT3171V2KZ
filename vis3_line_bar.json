@@ -1,7 +1,6 @@
-
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Stacked Bar Chart and Line Chart for Australian Landslide Events by State with a maximum year slider, state filter, tooltips, and ordered segments.",
+  "description": "Stacked Bar Chart and Line Chart for Australian Landslide Events by State with a click selection filter and dropdown state filter.",
   "title": "Australian Landslide Events by State and Year (2007-2016)",  
   "width": 700,
   "height": 400,
@@ -47,16 +46,18 @@
     {"filter": "datum.Year <= Year_Upper_Limit"},
     {
       "filter": "StateFilter == 'All' || datum.admin_division_name == StateFilter"
-    },
-    {
-      "window": [{"op": "count", "as": "TotalEvents"}],
-      "frame": [null, null],
-      "groupby": ["Year", "admin_division_name"]
     }
   ],
   "layer": [
     {
       "mark": "bar",
+      "selection": {
+        "state_selection": {
+          "type": "single",
+          "fields": ["admin_division_name"],
+          "on": "click"
+        }
+      },
       "encoding": {
         "x": {"field": "Year", "type": "ordinal", "title": "Year"},
         "y": {
@@ -89,11 +90,9 @@
             ]
           }
         },
-        "order": {
-          "aggregate": "count", 
-          "field": "event_id", 
-          "type": "quantitative", 
-          "sort": "descending"  
+        "opacity": {
+          "condition": {"selection": "state_selection", "value": 1},
+          "value": 0.2
         },
         "tooltip": [
           {"field": "Year", "title": "Year"},
