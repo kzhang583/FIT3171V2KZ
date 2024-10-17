@@ -1,8 +1,7 @@
-
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "description": "Bubble chart showing landslide fatality count by category, trigger, and size (centered dodging for overlapping points) with more pronounced bubble sizes.",
-  "title": "Fatalities in Global Landslide Events by Category, Trigger, and Size",  
+  "title": "Fatalities in Global Landslide Events by Category, Trigger, and Size",
   "width": 900,
   "height": 400,
   "data": {
@@ -61,16 +60,17 @@
       "name": "FatalityFilter",
       "value": 5000,
       "bind": {
-        "input": "number",
+        "input": "range",    
         "min": 0,
         "max": 5000,
+        "step": 100,
         "name": "Select Maximum Fatality Count (0-5000): "
       }
     }
   ],
   "transform": [
     {"filter": "datum.fatality_count != null"},
-    {"filter": "datum.landslide_category != '' && datum.landslide_trigger != ''"},  
+    {"filter": "datum.landslide_category != '' && datum.landslide_trigger != ''"},
     {
       "filter": "SizeFilter == 'All' || datum.landslide_size == SizeFilter"
     },
@@ -133,7 +133,7 @@
       "type": "quantitative"
     },
     "size": {
-      "field": "landslide_size",  
+      "field": "landslide_size",
       "type": "nominal",
       "title": "Landslide Size",
       "scale": {
@@ -153,24 +153,9 @@
           "tropical cyclone", "unknown", "vibration", "volcano"
         ],
         "range": [
-          "#8B4513",  
-          "#4169E1",  
-          "#8B0000",  
-          "#4682B4",  
-          "#FF4500",  
-          "#00CED1",  
-          "#B0C4DE",  
-          "#FFD700",  
-          "#A9A9A9",  
-          "#20B2AA",  
-          "#696969",  
-          "#D3D3D3",  
-          "#1E90FF",  
-          "#ADD8E6",  
-          "#FF6347",  
-          "#778899",  
-          "#D2691E",  
-          "#FF4500"   
+          "#8B4513",  "#4169E1",  "#8B0000",  "#4682B4",  "#FF4500",  "#00CED1",  
+          "#B0C4DE",  "#FFD700",  "#A9A9A9",  "#20B2AA",  "#696969",  "#D3D3D3",  
+          "#1E90FF",  "#ADD8E6",  "#FF6347",  "#778899",  "#D2691E",  "#FF4500"
         ]
       }
     },
@@ -179,7 +164,7 @@
       {"field": "event_date", "type": "temporal", "title": "Event Date"},
       {"field": "landslide_category", "type": "nominal", "title": "Landslide Category"},
       {"field": "fatality_count", "type": "quantitative", "title": "Fatalities"},
-      {"field": "injury_count", "type": "quantitative", "title": "Injuries"},  
+      {"field": "injury_count", "type": "quantitative", "title": "Injuries"},
       {"field": "landslide_size", "type": "nominal", "title": "Landslide Size"},
       {"field": "landslide_trigger", "type": "nominal", "title": "Trigger"},
       {"field": "country_code", "type": "nominal", "title": "Country Code"}
