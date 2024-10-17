@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,22 +7,135 @@
     <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 36px;
+        }
+
+        #global-map-container {
+            width: 90%;
+            margin: 40px auto 60px auto;
+            max-width: 1200px;
+        }
+
+        #global-map {
+            width: 100%;
+            height: 600px;
+            margin: 0 auto;
+        }
+
+        #visualizations {
+            display: flex;
+            flex-direction: column; /* Stack them vertically */
+            align-items: center;
+            gap: 40px;
+            width: 90%;
+            margin: 0 auto;
+            margin-bottom: 40px;
+            max-width: 1200px;
+        }
+
+        .vis-container {
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px; /* Ensures good spacing between each chart */
+        }
+
+        #vis_bubble {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #key-insights, #data-limitations {
+            text-align: left;
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1000px;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        #key-insights h3, #data-limitations h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        @media screen and (max-width: 800px) {
+            #visualizations {
+                flex-direction: column;
+            }
+
+            .vis-container {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Global and Australian Landslide Events</h1>
+    <h1>Global and Australian Landslide Events</h1>
+
+    <!-- Global Map Visualization -->
+    <div id="global-map-container">
+        <div id="global-map"></div>
+    </div>
+
+    <div id="key-insights">
+        <h3>Key Insight</h3>
+ 
+        <p><strong>Regions with frequent rainfall experience more landslide events, such as Southeast Asia.</strong></p>
+    </div>
     
-    <!-- Global Map -->
-    <div id="global_map" style="text-align: center;"></div>
+    <!-- State Map and Line/Bar Chart Stacked -->
+    <div id="visualizations">
+        <div id="vis_state_map" class="vis-container"></div>
+        <div id="vis_line_bar" class="vis-container"></div>
+    </div>
+
+    <!-- Key Insight -->
+    <div id="key-insights">
+        <h3>Key Insights</h3>
+        <p><strong>The majority of landslides in Australia occur in Queensland and Victoria.</strong></p>
+    </div>
+
+    <!-- Bubble Chart Below -->
+    <div id="vis_bubble"></div>
+
+    <!-- Data Limitations -->
+    <div id="data-limitations">
+        <h3>Data Limitations</h3>
+        <p>This dataset includes only reported landslide events and may underrepresent landslides in less populated areas where reports are scarce.</p>
+    </div>
 
     <script type="text/javascript">
-        vegaEmbed('#global_map', 'https://kzhang583.github.io/FIT3171V2KZ/vis1_global_map.json').catch(console.error);
-    </script>
+        // Embed the Global Map (Make it Larger)
+        vegaEmbed('#global-map', 'https://kzhang583.github.io/FIT3171V2KZ/vis1_global_map.json', { "width": 1200, "height": 600 }).catch(console.error);
 
-    <!-- State Map -->
-    <div id="state_map" style="text-align: center; margin-top: 50px;"></div>
+        // Embed the State Map
+        vegaEmbed('#vis_state_map', 'https://kzhang583.github.io/FIT3171V2KZ/vis2_state_map.json', { "width": 600, "height": 500 }).catch(console.error);
 
-    <script type="text/javascript">
-        vegaEmbed('#state_map', 'https://kzhang583.github.io/FIT3171V2KZ/vis2_state_map.json').catch(console.error);
+        // Embed the Line/Bar Chart
+        vegaEmbed('#vis_line_bar', 'https://kzhang583.github.io/FIT3171V2KZ/vis3_line_bar.json', { "width": 600, "height": 500 }).catch(console.error);
+
+        // Embed the Bubble Chart
+        vegaEmbed('#vis_bubble', 'https://kzhang583.github.io/FIT3171V2KZ/vis4_bubble.json').catch(console.error);
     </script>
 </body>
 </html>
