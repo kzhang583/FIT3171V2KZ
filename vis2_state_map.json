@@ -62,7 +62,7 @@
       "selection": {
         "state_selection": {
           "type": "single",
-          "fields": ["admin_division_name"],  // Select based on the state name
+          "fields": ["admin_division_name"],  
           "bind": "legend",
           "on": "click"
         }
@@ -116,7 +116,7 @@
         },
         "opacity": {
           "condition": {"param": "state_selection", "value": 1},
-          "value": 0.2  // Non-selected states are faded
+          "value": 0.2  
         },
         "tooltip": [
           {"field": "event_title", "type": "nominal", "title": "Event"},
