@@ -1,3 +1,4 @@
+
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
@@ -58,6 +59,14 @@
         {"filter": "SizeFilter == 'All' || datum.landslide_size == SizeFilter"}
       ],
       "mark": {"type": "point", "filled": true},
+      "selection": {
+        "state_selection": {
+          "type": "single",
+          "fields": ["admin_division_name"],  // Select based on the state name
+          "bind": "legend",
+          "on": "click"
+        }
+      },
       "encoding": {
         "longitude": {"field": "longitude", "type": "quantitative"},
         "latitude": {"field": "latitude", "type": "quantitative"},
@@ -95,15 +104,19 @@
               "Western Australia"
             ],
             "range": [
-              "#f58418",  
-              "#81a0c2",  
-              "#eec93a",  
-              "#72b7b2",  
-              "#b279a1",  
-              "#fd9ea6"   
+              "#f58418",
+              "#81a0c2",
+              "#eec93a",
+              "#72b7b2",
+              "#b279a1",
+              "#fd9ea6"
             ]
           },
           "legend": {"title": "State"}
+        },
+        "opacity": {
+          "condition": {"param": "state_selection", "value": 1},
+          "value": 0.2  // Non-selected states are faded
         },
         "tooltip": [
           {"field": "event_title", "type": "nominal", "title": "Event"},
